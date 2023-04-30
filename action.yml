@@ -1,32 +1,20 @@
 name: 'Setup QEMU'
-jobs:
-  windows:
-    runs-on: windows-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Install QEMU
-        shell: bash
-        run: |
-          C:/msys64/usr/bin/yes.exe | C:/msys64/usr/bin/pacman.exe -S mingw-w64-ucrt-x86_64-qemu
-          echo "C:\msys64\ucrt64\bin" >> $GITHUB_PATH
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v3
+    - if: runner.os == 'Linux'
+      uses: Homebrew/actions/setup-homebrew@master
+      shell: bash
+      run: brew update && brew install qemu
 
-  macos:
-    runs-on: macos-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Install QEMU
-        shell: bash
-        run: brew update && brew install qemu
+    - if: runner.os == 'macOS'
+      shell: bash
+      run: brew update && brew install qemu
 
-  linux:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Install Homebrew
-        uses: Homebrew/actions/setup-homebrew@master
-      - name: Install QEMU
-        shell: bash
-        run: brew update && brew install qemu
+    - if: runner.os == 'Windows'
+      shell: bash
+      run: |
+        C:/msys64/usr/bin/yes.exe | C:/msys64/usr/bin/pacman.exe -S mingw-w64-ucrt-x86_64-qemu
+        echo "C:\msys64\ucrt64\bin" >> $GITHUB_PATH
+
