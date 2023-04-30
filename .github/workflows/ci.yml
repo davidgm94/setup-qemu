@@ -1,0 +1,21 @@
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: "0 0 * * *"
+jobs:
+  Test:
+    runs-on: ${{matrix.host }}
+    continue-on-error: false
+    strategy:
+      fail-fast: false
+      matrix:
+        host: [windows-latest, ubuntu-latest, macos-latest]
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.
+      - run: qemu-system-x86_64 --version
+
