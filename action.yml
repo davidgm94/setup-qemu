@@ -3,21 +3,20 @@ runs:
   using: "composite"
   steps:
     - uses: actions/checkout@v3
-    - name: 'Linux'
-      uses: Homebrew/actions/setup-homebrew@master
-      shell: bash
-      run: brew update && brew install qemu
+    - uses: Homebrew/actions/setup-homebrew@master
       if: runner.os == 'Linux'
 
-    - name: 'MacOS'
+    - if: runner.os == 'Linux'
       shell: bash
       run: brew update && brew install qemu
-      if: runner.os == 'macOS'
 
-    - name: 'Windows'
+    - if: runner.os == 'macOS'
+      shell: bash
+      run: brew update && brew install qemu
+
+    - if: runner.os == 'Windows'
       shell: bash
       run: |
         C:/msys64/usr/bin/yes.exe | C:/msys64/usr/bin/pacman.exe -S mingw-w64-ucrt-x86_64-qemu
         echo "C:\msys64\ucrt64\bin" >> $GITHUB_PATH
-      if: runner.os == 'Windows'
 
