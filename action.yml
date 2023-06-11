@@ -6,17 +6,14 @@ runs:
     - uses: cachix/install-nix-action@v20
       with:
         nix_path: nixpkgs=channel:nixpkgs-unstable
-      if: runner.os == 'Linux'
-    - if: runner.os == 'Linux'
+      if: runner.os == 'Linux' || runner.os == 'macOS'
+    - if: runner.os == 'Linux' || runner.os == 'macOS'
       shell: bash
       run: |
+        export NIXPKGS_ALLOW_UNSUPPORTED_SYSTEM=1
         nix-channel --add https://nixos.org/channels/nixpkgs-unstable unstable
         nix-channel --update
         nix-env -iA qemu_full -f '<nixpkgs>'
-
-    - if: runner.os == 'macOS'
-      shell: bash
-      run: brew update && brew install qemu
 
     - if: runner.os == 'Windows'
       shell: pwsh
