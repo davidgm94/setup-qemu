@@ -16,7 +16,8 @@ runs:
 
     - if: runner.os == 'macOS'
       shell: bash
-      run: brew update && brew install qemu
+      run: |
+        brew install qemu
 
     - if: runner.os == 'Windows'
       shell: pwsh
