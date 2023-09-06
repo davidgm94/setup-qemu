@@ -3,20 +3,16 @@ runs:
   using: "composite"
   steps:
     - uses: actions/checkout@v3
-    - uses: cachix/install-nix-action@v20
-      with:
-        nix_path: nixpkgs=channel:nixpkgs-unstable
-      if: runner.os == 'Linux'
     - if: runner.os == 'Linux'
       shell: bash
       run: |
-        nix-channel --add https://nixos.org/channels/nixpkgs-unstable unstable
-        nix-channel --update
-        nix-env -iA qemu_full -f '<nixpkgs>'
+        sudo apt install -y qemu qemu-system || sudo apt update && sudo apt install -y qemu qemu-system
 
     - if: runner.os == 'macOS'
       shell: bash
-      run: brew update && brew install qemu
+      run: |
+        brew update
+        brew list qemu || brew install qemu
 
     - if: runner.os == 'Windows'
       shell: pwsh
